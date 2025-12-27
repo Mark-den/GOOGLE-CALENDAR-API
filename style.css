@@ -4,7 +4,7 @@
   box-sizing: border-box;
 }
 
-
+/* ---------- Page layout ---------- */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #f4f6f8;
@@ -15,6 +15,7 @@ body {
   padding: 24px;
 }
 
+/* ---------- Main container card ---------- */
 .container {
   background: #ffffff;
   border-radius: 10px;
@@ -22,11 +23,13 @@ body {
   padding: 28px;
   max-width: 720px;
   width: 100%;
+  position: relative;
 }
 
-.container { position: relative; }
-
-.container.signed-in { padding-bottom: 72px; }
+/* Extra bottom space when user is signed in (for logout button) */
+.container.signed-in {
+  padding-bottom: 72px;
+}
 
 .title {
   color: #17202a;
@@ -36,6 +39,7 @@ body {
   text-align: left;
 }
 
+/* ---------- Card header (gradient top bar) ---------- */
 .card-header {
   height: 64px;
   background: linear-gradient(90deg, #0b5fff 0%, #6a8cff 50%, #8f6bff 100%);
@@ -47,31 +51,24 @@ body {
   box-shadow: inset 0 -1px 0 rgba(255,255,255,0.06);
 }
 
-.card-header h1 { font-size: 18px; font-weight:700; margin:0; }
 
-.card-body { padding: 18px 0 0 0; }
+.card-header h1 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+}
 
+/* ---------- Card content ---------- */
+.card-body {
+  padding: 18px 0 0 0;
+}
 .subtitle {
   color: #55606a;
   margin-bottom: 18px;
   font-size: 14px;
 }
 
-.card-header {
-  height: 64px;
-  background: linear-gradient(90deg, #0b5fff 0%, #6a8cff 50%, #8f6bff 100%);
-  border-radius: 10px 10px 0 0;
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  color: #ffffff;
-  box-shadow: inset 0 -1px 0 rgba(255,255,255,0.06);
-}
-
-.card-header h1 { font-size: 18px; font-weight:700; margin:0; }
-
-.card-body { padding: 18px 0 0 0; }
-
+/* ---------- Sections (auth & load buttons) ---------- */
 #authSection,
 #loadSection {
   display: flex;
@@ -81,6 +78,7 @@ body {
   align-items: center;
 }
 
+/* ---------- Buttons (base style) ---------- */
 .btn {
   padding: 10px 16px;
   border: 1px solid transparent;
@@ -92,22 +90,30 @@ body {
   min-width: 120px;
 }
 
+/* Primary button (login, load, create) */
 .btn-primary {
   background: #0b5fff;
   color: white;
   border-color: #0b5fff;
 }
 
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(11,95,255,0.12); }
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(11,95,255,0.12);
+}
 
+/* Secondary button (clear, optional actions) */
 .btn-secondary {
   background: transparent;
   color: #17202a;
   border-color: #e6e9ee;
 }
 
-.btn-secondary:hover { background: #f7f9fb; }
+.btn-secondary:hover {
+  background: #f7f9fb;
+}
 
+/* ---------- Logout button ---------- */
 #logoutBtn {
   color: #0b5fff;
   position: absolute;
@@ -118,6 +124,7 @@ body {
   font-size: 13px;
 }
 
+/* ---------- Delete event button ---------- */
 .btn-delete {
   margin-left: 12px;
   background: #ff4d4f;
@@ -127,11 +134,27 @@ body {
   font-size: 13px;
   border-radius: 6px;
 }
-.btn-delete:hover { box-shadow: 0 6px 18px rgba(255, 77, 79, 0.12); transform: translateY(-1px); }
 
-.event-info { display:flex; flex-direction:column; }
-.event-info strong { font-size:15px; margin-bottom:4px; }
-.event-info small { color:#7a858f; }
+.btn-delete:hover {
+  box-shadow: 0 6px 18px rgba(255, 77, 79, 0.12);
+  transform: translateY(-1px);
+}
+
+/* ---------- Event info layout ---------- */
+.event-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.event-info strong {
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.event-info small {
+  color: #7a858f;
+}
+
 
 #loading {
   text-align: center;
@@ -140,19 +163,17 @@ body {
   font-weight: 600;
 }
 
+/* Loading animation */
 #loading p {
   animation: pulse 1.5s infinite;
 }
 
 @keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
 
+/* ---------- Error message ---------- */
 #error {
   background: #fff4f4;
   color: #8b1e1e;
@@ -163,6 +184,7 @@ body {
   font-weight: 600;
 }
 
+/* ---------- Success message ---------- */
 .success {
   background: #f2fff6;
   color: #0b7a3a;
@@ -173,6 +195,7 @@ body {
   font-weight: 600;
 }
 
+/* ---------- Events list ---------- */
 .events-list {
   list-style: none;
   margin-top: 20px;
@@ -187,18 +210,21 @@ body {
   transition: all 0.3s ease;
 }
 
+
 .events-list li:hover {
   background: #f0f0f0;
   transform: translateX(5px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Event title */
 .events-list li strong {
   display: block;
   color: #333;
   margin-bottom: 5px;
   font-size: 16px;
 }
+
 
 .events-list li small {
   color: #999;
@@ -211,11 +237,37 @@ body {
   font-style: italic;
 }
 
-.field { display:flex; flex-direction:column; margin-bottom:10px; }
-.field label { margin-bottom:6px; color:#444; font-weight:600; font-size:13px; }
-.field input[type="text"], .field input[type="datetime-local"] { padding:10px; border:1px solid #eceff3; border-radius:8px; }
-.create-title { margin-top: 18px; margin-bottom: 10px; font-size:15px; color:#222; font-weight:700; }
+/* ---------- Form fields ---------- */
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
 
+.field label {
+  margin-bottom: 6px;
+  color: #444;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.field input[type="text"],
+.field input[type="datetime-local"] {
+  padding: 10px;
+  border: 1px solid #eceff3;
+  border-radius: 8px;
+}
+
+/* Create event section title */
+.create-title {
+  margin-top: 18px;
+  margin-bottom: 10px;
+  font-size: 15px;
+  color: #222;
+  font-weight: 700;
+}
+
+/* ---------- Responsive (mobile) ---------- */
 @media (max-width: 600px) {
   .container {
     padding: 20px;
@@ -225,10 +277,12 @@ body {
     font-size: 24px;
   }
 
+  
   .btn {
     min-width: 100%;
   }
-  /* place logout button inline on small screens */
+
+ 
   #logoutBtn {
     position: static;
     width: 100%;

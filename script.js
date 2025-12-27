@@ -1,19 +1,27 @@
+// Google OAuth client ID used to identify the application
 const CLIENT_ID = "182932293888-a531fdsnb8h76kd2abva1i90fmuj7cc2.apps.googleusercontent.com";
+
+// Permission scope allowing access to Google Calendar
 const SCOPES = "https://www.googleapis.com/auth/calendar";
 
+// OAuth token handler and access token storage
 let tokenClient;
 let accessToken = null;
 
+
+// Displays error messages to the user
 function showError(message) {
   const errorDiv = document.getElementById("error");
   errorDiv.textContent = message;
   errorDiv.style.display = "block";
 }
 
+
 function hideError() {
   document.getElementById("error").style.display = "none";
 }
 
+// Displays success feedback temporarily
 function showSuccess(message) {
   const s = document.getElementById("success");
   s.textContent = message;
@@ -21,9 +29,11 @@ function showSuccess(message) {
   setTimeout(() => { s.style.display = "none"; }, 4000);
 }
 
+// Shows or hides loading indicator
 function showLoading(show) {
   document.getElementById("loading").style.display = show ? "block" : "none";
 }
+
 
 function formatDateTime(dateString) {
   if (!dateString) return "No time";
@@ -31,7 +41,9 @@ function formatDateTime(dateString) {
   return date.toLocaleString();
 }
 
-// Helpers to track events created by this app
+
+
+// Retrieves stored event IDs created by this app
 function getCreatedEventIds() {
   try {
     const raw = localStorage.getItem('createdEventIds');
@@ -41,6 +53,7 @@ function getCreatedEventIds() {
   }
 }
 
+// Saves newly created event ID
 function saveCreatedEventId(id) {
   if (!id) return;
   const ids = getCreatedEventIds();
@@ -50,6 +63,7 @@ function saveCreatedEventId(id) {
   }
 }
 
+// Removes deleted event ID from storage
 function removeCreatedEventId(id) {
   if (!id) return;
   const ids = getCreatedEventIds();
@@ -66,21 +80,27 @@ function isCreatedEvent(id) {
   return ids.includes(id);
 }
 
+
+// Initializes Google OAuth when page loads
 window.onload = () => {
   try {
     tokenClient = google.accounts.oauth2.initTokenClient({
       client_id: CLIENT_ID,
       scope: SCOPES,
       callback: (tokenResponse) => {
+        // Store access token after successful login
         if (tokenResponse.access_token) {
           accessToken = tokenResponse.access_token;
+
+          // DOM manipulation: update UI after login
           document.getElementById("authSection").style.display = "none";
           document.getElementById("loadSection").style.display = "block";
-            document.getElementById("createSection").style.display = "block";
-            document.getElementById("logoutBtn").style.display = "block";
-            // add class to container so we can reserve space for the logout button
-            const container = document.querySelector('.container');
-            if (container) container.classList.add('signed-in');
+          document.getElementById("createSection").style.display = "block";
+          document.getElementById("logoutBtn").style.display = "block";
+
+          const container = document.querySelector('.container');
+          if (container) container.classList.add('signed-in');
+
           hideError();
         }
       }
@@ -90,26 +110,30 @@ window.onload = () => {
   }
 };
 
+// Triggers Google sign-in process
 document.getElementById("loginBtn").onclick = () => {
-  try {
-    tokenClient.requestAccessToken();
-  } catch (error) {
-    showError("Login failed: " + error.message);
-  }
+  tokenClient.requestAccessToken();
 };
+
 
 document.getElementById("logoutBtn").onclick = () => {
   accessToken = null;
+
+  // DOM reset to logged-out state
   document.getElementById("authSection").style.display = "block";
   document.getElementById("loadSection").style.display = "none";
   document.getElementById("createSection").style.display = "none";
   document.getElementById("logoutBtn").style.display = "none";
   document.getElementById("events").innerHTML = "";
+
   const container = document.querySelector('.container');
   if (container) container.classList.remove('signed-in');
+
   hideError();
 };
 
+
+// Load events button handler
 document.getElementById("loadEventsBtn").onclick = () => loadEvents();
 
 function loadEvents() {
@@ -121,9 +145,10 @@ function loadEvents() {
   showLoading(true);
   hideError();
 
+  // Google Calendar API GET request
   fetch("https://www.googleapis.com/calendar/v3/calendars/primary/events", {
     headers: {
-      Authorization: `Bearer ${accessToken}`
+      Authorization: `Bearer ${accessToken}` // API authentication
     }
   })
   .then(res => {
@@ -134,9 +159,11 @@ function loadEvents() {
   })
   .then(data => {
     showLoading(false);
+
     const eventsList = document.getElementById("events");
     eventsList.innerHTML = "";
 
+    // Handle empty calendar
     if (!data.items || data.items.length === 0) {
       const li = document.createElement("li");
       li.textContent = "No events found";
@@ -145,10 +172,12 @@ function loadEvents() {
       return;
     }
 
+    // Dynamically display events in the DOM
     data.items.forEach(event => {
       const li = document.createElement("li");
       const title = event.summary || "No Title";
       const startTime = formatDateTime(event.start?.dateTime || event.start?.date);
+
       li.innerHTML = `<strong>${title}</strong><br><small>${startTime}</small>`;
       eventsList.appendChild(li);
     });
@@ -159,13 +188,16 @@ function loadEvents() {
   });
 }
 
-// Create event handlers
+
+
+// Create event button handler
 document.getElementById("createEventBtn").onclick = async () => {
   if (!accessToken) {
     showError("No access token. Please login.");
     return;
   }
 
+  // Read form values from DOM
   const title = document.getElementById("eventTitle").value.trim();
   const desc = document.getElementById("eventDesc").value.trim();
   const startVal = document.getElementById("eventStart").value;
@@ -179,6 +211,7 @@ document.getElementById("createEventBtn").onclick = async () => {
   const startISO = new Date(startVal).toISOString();
   const endISO = new Date(endVal).toISOString();
 
+  // Validate event duration
   if (new Date(startISO) >= new Date(endISO)) {
     showError("End time must be after start time.");
     return;
@@ -187,6 +220,7 @@ document.getElementById("createEventBtn").onclick = async () => {
   showLoading(true);
   hideError();
 
+  // Event object sent to Google Calendar API
   const event = {
     summary: title,
     description: desc || undefined,
@@ -195,23 +229,28 @@ document.getElementById("createEventBtn").onclick = async () => {
   };
 
   try {
-    const res = await fetch("https://www.googleapis.com/calendar/v3/calendars/primary/events", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(event)
-    });
+    // Google Calendar API POST request
+    const res = await fetch(
+      "https://www.googleapis.com/calendar/v3/calendars/primary/events",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(event)
+      }
+    );
 
     if (!res.ok) {
       const errText = await res.text();
       throw new Error(`Create failed: ${res.status} ${errText}`);
     }
 
-    const created = await res.json();
+    await res.json();
     showLoading(false);
-    // clear form and refresh events
+
+    // Reset form and reload events
     document.getElementById("createEventForm").reset();
     loadEvents();
     showSuccess("Event created — it will appear in your Google Calendar.");
@@ -221,27 +260,37 @@ document.getElementById("createEventBtn").onclick = async () => {
   }
 };
 
+// Clears event form inputs
 document.getElementById("clearFormBtn").onclick = () => {
   document.getElementById("createEventForm").reset();
 };
 
-// Delete event by id
+
+// Deletes an event from Google Calendar
 async function deleteEvent(eventId, listItem) {
   if (!accessToken) {
     showError('Not authenticated. Please sign in.');
     return;
   }
+
   showLoading(true);
   hideError();
+
   try {
-    const res = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events/${encodeURIComponent(eventId)}`, {
-      method: 'DELETE',
-      headers: { Authorization: `Bearer ${accessToken}` }
-    });
+    // Google Calendar API DELETE request
+    const res = await fetch(
+      `https://www.googleapis.com/calendar/v3/calendars/primary/events/${encodeURIComponent(eventId)}`,
+      {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${accessToken}` }
+      }
+    );
+
     if (res.status === 204 || res.ok) {
-      // removed
+      // Update local storage and UI
       removeCreatedEventId(eventId);
       if (listItem && listItem.parentElement) listItem.remove();
+
       showLoading(false);
       showSuccess('Event deleted');
     } else {
