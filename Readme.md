@@ -25,7 +25,7 @@ This project is a simple web-based application that demonstrates how to integrat
 - Google Calendar API  
 - Google OAuth 2.0  
 
----
+--
 
 ## 🔐 Authentication
 
@@ -48,3 +48,4 @@ This application uses **OAuth 2.0** for secure authentication. Only authenticate
 1. Clone the repository:
    ```bash
    git clone https://github.com/your-username/google-calendar-api-app.git
+
