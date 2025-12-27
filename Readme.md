@@ -47,6 +47,7 @@ This application uses **OAuth 2.0** for secure authentication. Only authenticate
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/mark-den/google-calendar-api-app.git
+   git clone https://github.com/Mark-den/GOOGLE-CALENDAR-API.git
+
 
 
