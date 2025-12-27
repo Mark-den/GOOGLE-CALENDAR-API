@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Calendar API Demo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+  <div class="card-header">
+    <h1>Google Calendar API</h1>
+  </div>
+
+  <div class="card-body">
+    <p class="subtitle">Connect your Google account and manage events quickly.</p>
+
+    <div id="authSection">
+      <button id="loginBtn" class="btn btn-primary">Sign in with Google</button>
+    </div>
+
+    <div id="loadSection" style="display:none;">
+      <button id="loadEventsBtn" class="btn btn-primary">Load Calendar Events</button>
+    </div>
+
+    <div id="createSection" style="display:none; margin-top:10px;">
+      <h2 class="create-title">Create Event</h2>
+      <form id="createEventForm">
+        <div class="field">
+          <label for="eventTitle">Title</label>
+          <input type="text" id="eventTitle" required />
+        </div>
+        <div class="field">
+          <label for="eventDesc">Description</label>
+          <input type="text" id="eventDesc" />
+        </div>
+        <div class="field">
+          <label for="eventStart">Start (local)</label>
+          <input type="datetime-local" id="eventStart" required />
+        </div>
+        <div class="field">
+          <label for="eventEnd">End (local)</label>
+          <input type="datetime-local" id="eventEnd" required />
+        </div>
+        <div style="display:flex;gap:10px; margin-top:10px;">
+          <button id="createEventBtn" class="btn btn-primary" type="button">Create Event</button>
+          <button id="clearFormBtn" class="btn btn-secondary" type="button">Clear</button>
+        </div>
+      </form>
+    </div>
+
+    <div id="loading" class="loading" style="display:none;">
+      <p>Loading events...</p>
+    </div>
+
+    <div id="error" class="error" style="display:none;"></div>
+    <div id="success" class="success" style="display:none;"></div>
+
+    <ul id="events" class="events-list"></ul>
+  </div>
+
+  <button id="logoutBtn" class="btn btn-secondary" style="display:none;">Sign out</button>
+</div>
+
+<script src="https://accounts.google.com/gsi/client"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
